@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生物基礎 模試（完全版）</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --success: #16a34a;
+            --error: #dc2626;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .timer-badge {
+            background: #eff6ff;
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 20px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            white-space: pre-line;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #fff;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .option-item input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .text-input-container textarea {
+            width: 100%;
+            height: 90px;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .explanation {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #334155;
+            white-space: pre-line;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--text-sub);
+        }
+
+        .nav-btn:hover {
+            background: #f8fafc;
+            color: var(--text-main);
+        }
+
+        .summary-card {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <header>
+        <h1>生物基礎 過去問形式模試</h1>
+        <div class="timer-badge" id="timer">残り時間 30:00</div>
+    </header>
+
+    <div id="quiz-container">
+        <div class="card">
+            <div class="question-header">
+                <span id="q-category">大問1</span>
+                <span id="q-progress">問 1 / 10</span>
+            </div>
+            <div class="question-text" id="q-text">
+                読み込み中...
+            </div>
+
+            <div class="options-list" id="options-container"></div>
+
+            <div class="text-input-container" id="text-input-container" style="display: none;">
+                <textarea id="user-text-answer" placeholder="ここに記述解答を入力してください"></textarea>
+            </div>
+
+            <button class="btn-primary" id="submit-btn" onclick="checkAnswer()">解答を決定・採点</button>
+
+            <div class="result-box" id="result-box">
+                <strong id="result-status" style="font-size: 1.1rem;">正解！</strong>
+                <div class="explanation" id="result-explanation">
+                    ここに解説が表示されます。
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prev-btn" onclick="prevQuestion()" style="display:none;">前の問題へ</button>
+            <button class="nav-btn" id="next-btn" onclick="nextQuestion()" style="display:none;">次の問題へ進む</button>
+        </div>
+    </div>
+
+    <div class="card summary-card" id="summary-container" style="display: none;">
+        <h2>模試終了・お疲れ様でした！</h2>
+        <p>あなたの総合結果</p>
+        <div class="score-display" id="final-score">0 / 10問正解</div>
+        <p style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">あなたの正答率: <span id="final-percentage" style="color: var(--primary);">0%</span></p>
+        <p id="final-comment" style="color: var(--text-sub); margin-bottom: 25px;">繰り返し挑戦して苦手分野を克服しましょう！</p>
+        <button class="btn-primary" onclick="initQuiz()">もう一度挑戦する（新しい問題を生成）</button>
+    </div>
+</div>
+
+<script>
+    let questionsData = [];
+    let currentIdx = 0;
+    let userAnswers = [];
+    let timeLeft = 1800;
+    let timerInterval;
+
+    function generateDynamicMock() {
+        return [
+            {
+                category: "大問1：生物の体内環境",
+                type: "choice",
+                text: "問1 ヘモグロビンが血液の状態によって酸素との結合しやすさを変化させることの意義に関する記述として、最も適当なものを次の①～④の中から一つ選びなさい。",
+                options: [
+                    "① 代謝が活発で二酸化炭素濃度の高い組織に、より多くの酸素を供給することができる。",
+                    "② 激しい運動を行うときに備えて、筋肉組織の中に酸素を蓄積して保持することができる。",
+                    "③ 酸素をあまり必要としない組織から、不要な酸素を回収して血液中に戻すことができる。",
+                    "④ 組織での二酸化炭素濃度の上昇を抑え、血液のpHを急激に上昇させる働きを持つ。"
+                ],
+                answer: 0,
+                explanation: "正解：①\n【解説】組織では呼吸により二酸化炭素が増えてpHが低下し、ヘモグロビンから酸素が離れやすくなります（ボーア効果）。"
+            },
+            {
+                category: "大問1：生物の体内環境",
+                type: "choice",
+                text: "問2 ヒトの血糖濃度の調節における自律神経系と内分泌系（ホルモン）の記述として「誤っているもの」を、次の①～⑤の中から一つ選びなさい。",
+                options: [
+                    "① 肝臓の細胞には、インスリンの受容体とグルカゴンの受容体の両方が存在する。",
+                    "② 血糖濃度の変化は、間脳の視床下部およびすい臓ランゲルハンス島の細胞で感知される。",
+                    "③ 糖質コルチコイドは、タンパク質からの分解産物を利用して糖の合成を促進する。",
+                    "④ 副交感神経の興奮はインスリンの分泌を促進し、交感神経の興奮はグルカゴンの分泌を促進する。",
+                    "⑤ 副腎皮質刺激ホルモンは、副腎髄質に作用してアドレナリンの分泌を促進する。"
+                ],
+                answer: 4,
+                explanation: "正解：⑤\n【解説】副腎皮質刺激ホルモンが作用するのは「副腎皮質」であり、アドレナリンは「副腎髄質」から分泌されます。"
+            },
+            {
+                category: "大問2：体液とその成分",
+                type: "choice",
+                text: "問3 ヒトの血液・組織液中に見られる成分に関する記述として、最も適当なものを次の①～⑥の中から一つ選びなさい。",
+                options: [
+                    "① 血しょう中のタンパク質（アルブミンなど）は、大きいため毛細血管壁を通り抜けにくく組織液中にはごく少ない。",
+                    "② 赤血球は核を持ち、酸素を運搬するために組織液中に多量に滲出している。",
+                    "③ グルカゴンなどのホルモンは血管内のみに留まり、組織液中には移行しない。",
+                    "④ 血小板は白血球よりも大きく、血管壁を自力で通り抜けて組織液中に移動する。",
+                    "⑤ 組織液は血しょうと全く同じ成分であり、タンパク質濃度も同等である。",
+                    "⑥ リンパ液には赤血球が大量に含まれ、酸素供給の中心的な役割を果たす。"
+                ],
+                answer: 0,
+                explanation: "正解：①\n【解説】血漿タンパク質は分子が大きいため毛細血管壁を通過しにくく、組織液中にはほとんど含まれません。"
+            },
+            {
+                category: "大問2：循環系と血液成分",
+                type: "choice",
+                text: "問4 循環系および血液の成分に関する記述として「誤っているもの」を、次の①～⑤の中から一つ選びなさい。",
+                options: [
+                    "① 毛細血管には平滑筋からなる厚い層が存在し、
